@@ -50,7 +50,6 @@ public class Restaurant {
 	@Column(name="REST_PHOTO")
 	private String restPhoto;
 
-
 	@OneToOne(cascade=javax.persistence.CascadeType.ALL)
 	@JoinColumn(name="GEOFENCE_ID_FK")
 	private Address restAdd;

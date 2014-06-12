@@ -24,7 +24,7 @@
 			<beans:props>
 				<beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
 				</beans:prop>
-				<beans:prop key="hibernate.hbm2ddl.auto">create-drop</beans:prop>
+				<beans:prop key="hibernate.hbm2ddl.auto">create-update</beans:prop>
 				<beans:prop key="hibernate.use.query.cache">true</beans:prop>
 				<beans:prop key="hibernate.show_sql">true</beans:prop>
 			</beans:props>
