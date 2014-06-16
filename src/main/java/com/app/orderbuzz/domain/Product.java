@@ -27,7 +27,7 @@ import javax.persistence.Transient;
  * @Generated Value - This annotation is used to make field Auto Increment 
  * @OneToOne is used to perform 1-1 mapping 
  * @OneToMany mapping will generate a New Mapping table
- * Cascade keyword  is used to avoid Lazy load and to perform cascade operations
+ * Cascade keyword  is used  to perform cascade operations
  */
 
 @Entity 

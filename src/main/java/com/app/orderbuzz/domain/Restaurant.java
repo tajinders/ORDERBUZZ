@@ -27,7 +27,7 @@ import javax.persistence.Table;
  * @OneToOne is used to perform 1-1 mapping between ADDRESS TABLE and RESTURANT TABLE
  * @JoinColumn - This annotation will change the default name of join column of(RESTURANT & ADDRESS table) to REST_ADD
  * @OneToMany mapping will generate a New Mapping table
- * Cascade keyword  is used to avoid Lazy load and to perform cascade operations
+ * Cascade keyword  is to perform cascade operations
  * Note: Column name ending with PK refers to Primary Key and Column name ending with FK is Forigen Key
  */
 
