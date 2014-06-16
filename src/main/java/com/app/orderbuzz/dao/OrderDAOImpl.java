@@ -49,7 +49,7 @@ public class OrderDAOImpl implements OrderDAO {
 		Session session = getSessionFactory().openSession();
 
 		// Selecting all orders 
-		String hql="from Order where order_status='"+status+"'";
+		String hql="from ORDER where ORDER_STATUS='"+status+"'";
 		Query query = session.createQuery(hql);
 		List <Order> orderList = query.list();
 		session.close();
@@ -65,7 +65,7 @@ public class OrderDAOImpl implements OrderDAO {
 
 		// Inserting newOrder in to Order Table
 
-		String hql = "SELECT COALESCE(MAX(OD.order_seq_no,0) FROM restaurant_order AS RO, order_details AS OD WHERE RO.order_id_fk = OD.order_id_pk AND RO.rest_id_fk="+restId;
+		String hql = "SELECT COALESCE(MAX(OD.ORDER_SEQ_NO,0) FROM RESTAURANT_ORDER AS RO, ORDER_DETAILS AS OD WHERE RO.ORDER_ID_FK = OD.ORDER_ID_PK AND RO.REST_ID_FK="+restId;
 		long orderSequenceNo = 0;
 		Query query = session.createSQLQuery(hql);
 
@@ -80,12 +80,12 @@ public class OrderDAOImpl implements OrderDAO {
 		long OrderId = (Long) session.save(newOrder);
 
 		//Inserting record in to Restaurant_Order Table
-		hql="insert into restaurant_order(rest_id_fk,order_id_fk) values('"+restId+"','"+OrderId+"')";
+		hql="insert into RESTAURANT_ORDER(REST_ID_FK,ORDER_ID_FK) values('"+restId+"','"+OrderId+"')";
 		query = session.createSQLQuery(hql);
 		query.executeUpdate();
 
 		//updating restaurant queue no in DB
-		hql="update restaurant set rest_queueno=rest_queueno+1 WHERE rest_id_pk ='"+restId+"'";
+		hql="update RESTAURANT set REST_QUEUENO=REST_QUEUENO+1 WHERE REST_ID_PK ='"+restId+"'";
 		query = session.createSQLQuery(hql);
 		query.executeUpdate();
 
@@ -100,19 +100,19 @@ public class OrderDAOImpl implements OrderDAO {
 		String restName;
 	
 		//Update Status 
-		String sql =  "UPDATE order_details od inner join restaurant_order ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK  set od.order_status='Done' Where od.order_status='pending' And od.order_seq_no=" + orderSeqNo;
+		String sql =  "UPDATE ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK  set od.ORDER_STATUS='Done' Where od.ORDER_STATUS='pending' And od.ORDER_SEQ_NO=" + orderSeqNo;
 		Query query = session.createSQLQuery(sql);
 		query.executeUpdate();
 
 		// Get Mobile_KEY
-		sql = "Select ORDER_GCMKEY from order_details od inner join restaurant_order ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK Where od.order_status='Done' And od.order_seq_no=" + orderSeqNo;
+		sql = "Select ORDER_GCMKEY from ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK Where od.ORDER_STATUS='Done' And od.ORDER_SEQ_NO=" + orderSeqNo;
 		query = session.createSQLQuery(sql);
 		mobilezRegkey = (String) query.list().get(0);
 		System.out.println(mobilezRegkey);
 
 		
 		// Get restaurant Name 
-		sql = "Select R.rest_name  from restaurant R inner join address A ON R.geofence_id_fk = A.geofence_id_pk where R.rest_id_pk="+restId;
+		sql = "Select R.REST_NAME  from RESTAURANT R inner join address A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK where R.REST_ID_PK="+restId;
 		query = session.createSQLQuery(sql);
 		restName = (String) query.list().get(0);
 		System.out.println(restName);
@@ -155,7 +155,7 @@ public class OrderDAOImpl implements OrderDAO {
 		
 		
 		// Update restaurant waiting queue no
-		sql = "UPDATE restaurant SET rest_queueno=rest_queueno-1 WHERE restid="+restId;
+		sql = "UPDATE RESTAURANT SET REST_QUEUENO=REST_QUEUENO-1 WHERE REST_ID_PK="+restId;
 		query = session.createSQLQuery(sql);
 		query.executeUpdate();
 		

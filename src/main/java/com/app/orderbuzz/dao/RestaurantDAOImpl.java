@@ -44,10 +44,10 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 	public List<Restaurant> getRestaurantsList(String Lat, String Long, String Radius) {
 		Session session = getSessionFactory().openSession();
 		//String hql="select R.restName, R.restId, R.restPhoto, R.restQueueNo, R.restAdd from Restaurant R";
-		String sql= "select * from restaurant As R Inner Join ( SELECT z.GEOFENCE_ID_PK, z.Add_desc, "
+		String sql= "select * from RESTAURANT As R Inner Join ( SELECT z.GEOFENCE_ID_PK, z.ADD_DESC, "
 				+ "p.distance_unit * DEGREES(ACOS(COS(RADIANS(p.latpoint)) * COS(RADIANS(z.latitude)) * "
 				+ "COS(RADIANS(p.longpoint) - RADIANS(z.longitude)) + SIN(RADIANS(p.latpoint)) * "
-				+ "SIN(RADIANS(z.latitude)))) AS distance_in_km FROM  address AS z JOIN ( "
+				+ "SIN(RADIANS(z.latitude)))) AS distance_in_km FROM  ADDRESS AS z JOIN ( "
 				+ "SELECT "+ Lat + " AS latpoint, "+ Long+ " AS longpoint,"+Radius+" AS radius, "
 				+ "111.045 AS distance_unit ) AS p WHERE z.latitude BETWEEN p.latpoint - "
 				+ "(p.radius / p.distance_unit) AND p.latpoint  + (p.radius / p.distance_unit) AND "
