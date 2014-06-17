@@ -47,10 +47,8 @@ public class OrderDAOImpl implements OrderDAO {
 	public List<Order> getOrdersForResturant(long restId, String status) {
 
 		Session session = getSessionFactory().openSession();
-
-		// Selecting all orders 
-		String hql="from ORDER where ORDER_STATUS='"+status+"'";
-		Query query = session.createQuery(hql);
+		String sql = "Select *  from ORDER_DETAILS OD inner join RESTAURANT_ORDER RO ON OD.ORDER_ID_PK = RO.ORDER_ID_FK where OD.ORDER_STATUS='"+status+"'";
+		Query query = session.createSQLQuery(sql);
 		List <Order> orderList = query.list();
 		session.close();
 		return orderList;
@@ -98,7 +96,7 @@ public class OrderDAOImpl implements OrderDAO {
 		Session session = getSessionFactory().openSession();
 		String mobilezRegkey;
 		String restName;
-	
+
 		//Update Status 
 		String sql =  "UPDATE ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK  set od.ORDER_STATUS='Done' Where od.ORDER_STATUS='pending' And od.ORDER_SEQ_NO=" + orderSeqNo;
 		Query query = session.createSQLQuery(sql);
@@ -110,22 +108,22 @@ public class OrderDAOImpl implements OrderDAO {
 		mobilezRegkey = (String) query.list().get(0);
 		System.out.println(mobilezRegkey);
 
-		
+
 		// Get restaurant Name 
 		sql = "Select R.REST_NAME  from RESTAURANT R inner join address A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK where R.REST_ID_PK="+restId;
 		query = session.createSQLQuery(sql);
 		restName = (String) query.list().get(0);
 		System.out.println(restName);
-		
-		
+
+
 		// GCM push
 		RestTemplate restTemplate = new RestTemplate();
 		String url = "https://android.googleapis.com/gcm/send?=&=";
-		
+
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.set("Authorization", "key=AIzaSyDTOBzSdYnJWpY6-ceWPOb91L6ho2LkDpw");
 		requestHeaders.set("Content-type", "application/x-www-form-urlencoded");
-		
+
 
 		MultiValueMap<String, String> postParams = new LinkedMultiValueMap<String, String>();
 		postParams.add("registration_id",mobilezRegkey);
@@ -134,13 +132,13 @@ public class OrderDAOImpl implements OrderDAO {
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(postParams, requestHeaders);
 
 		restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-		
-		
-		
-		
-		
+
+
+
+
+
 		//GCM PUSH
-		
+
 		/*
 		sendPost("https://android.googleapis.com/gcm/send?=&=",mobileregkey, data);
 		PostMethod method = new PostMethod(url);
@@ -151,18 +149,18 @@ public class OrderDAOImpl implements OrderDAO {
 				new NameValuePair("data", data),
 
 		};
-		*/
-		
-		
+		 */
+
+
 		// Update restaurant waiting queue no
 		sql = "UPDATE RESTAURANT SET REST_QUEUENO=REST_QUEUENO-1 WHERE REST_ID_PK="+restId;
 		query = session.createSQLQuery(sql);
 		query.executeUpdate();
-		
+
 		// close session
 		session.close();
-		
+
 	}
-	
+
 
 }
