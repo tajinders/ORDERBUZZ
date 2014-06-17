@@ -1,9 +1,11 @@
 package com.app.orderbuzz.domain;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -46,8 +48,8 @@ public class ChildProduct {
 			joinColumns = @JoinColumn(name = "CHILDPROD_ID_FK"), 
 			inverseJoinColumns = @JoinColumn(name = "MAIN_OPTION_ID_FK")
 			)
-	@OneToMany(cascade=javax.persistence.CascadeType.ALL)
-	private List<ChildProductMainOptions> childProductMainOptionsList;
+	@OneToMany(cascade=javax.persistence.CascadeType.ALL,fetch=FetchType.EAGER)
+	private Set<ChildProductMainOptions> childProductMainOptionsList;
 
 
 	public long getChildProdId() {
@@ -69,11 +71,11 @@ public class ChildProduct {
 	public void setChildProdBasePrice(float childProdBasePrice) {
 		this.childProdBasePrice = childProdBasePrice;
 	}
-	public List<ChildProductMainOptions> getChildProductMainOptionsList() {
+	public Set<ChildProductMainOptions> getChildProductMainOptionsList() {
 		return childProductMainOptionsList;
 	}
 	public void setChildProductMainOptionsList(
-			List<ChildProductMainOptions> childProductMainOptionsList) {
+			Set<ChildProductMainOptions> childProductMainOptionsList) {
 		this.childProductMainOptionsList = childProductMainOptionsList;
 	}
 

@@ -1,9 +1,11 @@
 package com.app.orderbuzz.domain;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -46,8 +48,8 @@ public class ChildProductMainOptions {
 			joinColumns = @JoinColumn(name = "MAIN_OPTION_ID_FK"), 
 			inverseJoinColumns = @JoinColumn(name = "SUB_OPTION_ID_FK")
 			)
-	@OneToMany(cascade=javax.persistence.CascadeType.ALL)
-	private List<ChildProductSubOptions> childProductSubOptionsList ;
+	@OneToMany(cascade=javax.persistence.CascadeType.ALL,fetch=FetchType.EAGER)
+	private Set<ChildProductSubOptions> childProductSubOptionsList ;
 
 
 
@@ -64,11 +66,11 @@ public class ChildProductMainOptions {
 		this.childProdMainOptionName = childProdMainOptionName;
 	}
 
-	public List<ChildProductSubOptions> getChildProductSubOptionsList() {
+	public Set<ChildProductSubOptions> getChildProductSubOptionsList() {
 		return childProductSubOptionsList;
 	}
 	public void setChildProductSubOptionsList(
-			List<ChildProductSubOptions> childProductSubOptionsList) {
+			Set<ChildProductSubOptions> childProductSubOptionsList) {
 		this.childProductSubOptionsList = childProductSubOptionsList;
 	}
 	public boolean isSingleSelection() {

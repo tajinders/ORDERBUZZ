@@ -1,9 +1,11 @@
 package com.app.orderbuzz.domain;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -52,15 +54,15 @@ public class Product {
 			joinColumns = @JoinColumn(name = "PROD_ID_FK"), 
 			inverseJoinColumns = @JoinColumn(name = "CHILDPROD_ID_FK")
 			)
-	@OneToMany(cascade=javax.persistence.CascadeType.ALL)
-	private List<ChildProduct> childProdList;
+	@OneToMany(cascade=javax.persistence.CascadeType.ALL,fetch=FetchType.EAGER)
+	private Set<ChildProduct> childProdList;
 
 	//Start of Member Functions 
 
-	public List<ChildProduct> getChildProdList() {
+	public Set<ChildProduct> getChildProdList() {
 		return childProdList;
 	}
-	public void setChildProdList(List<ChildProduct> childProdList) {
+	public void setChildProdList(Set<ChildProduct> childProdList) {
 		this.childProdList = childProdList;
 	}
 	public String getProdname() {

@@ -1,8 +1,10 @@
 package com.app.orderbuzz.domain;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -59,8 +61,8 @@ public class Restaurant {
 			joinColumns = @JoinColumn(name = "REST_ID_FK"), 
 			inverseJoinColumns = @JoinColumn(name = "PROD_ID_FK")
 			)
-	@OneToMany(cascade=javax.persistence.CascadeType.ALL)
-	private List<Product> restProdList;
+	@OneToMany(cascade=javax.persistence.CascadeType.ALL,fetch=FetchType.EAGER)
+	private Set<Product> restProdList;
 
 	
 
@@ -104,10 +106,10 @@ public class Restaurant {
 	public void setRestPhoto(String restPhoto) {
 		this.restPhoto = restPhoto;
 	}
-	public List<Product> getRestProdList() {
+	public Set<Product> getRestProdList() {
 		return restProdList;
 	}
-	public void setRestProdList(List<Product> restProdList) {
+	public void setRestProdList(Set<Product> restProdList) {
 		this.restProdList = restProdList;
 	}
 	public List<Order> getOrderList() {
