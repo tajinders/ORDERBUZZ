@@ -26,6 +26,7 @@ public class OrderController {
 	 * @param restId - Restaurant ID
 	 * @param status - Pending or Processed
 	 * @return - This method will return list of orders for a restaurant based on status
+	 * http://orderbuzz-orderbuzz.rhcloud.com/orderbuzz/order/getorders/1/done
 	 */
 
 	@RequestMapping(value = "/getorders/{restId}/{status}", method = RequestMethod.GET, produces = "application/json")

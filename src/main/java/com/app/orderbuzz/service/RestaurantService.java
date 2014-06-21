@@ -2,10 +2,11 @@ package com.app.orderbuzz.service;
 import java.util.List;
 
 import com.app.orderbuzz.domain.Restaurant;
+import com.app.orderbuzz.dto.RestaurantDto;
 
 
 public interface RestaurantService {
 	
-	public List<Restaurant> getRestaurantsList( String Lat, String Long, String Radius);
+	public List<RestaurantDto> getRestaurantsList( String Lat, String Long, String Radius);
 
 }

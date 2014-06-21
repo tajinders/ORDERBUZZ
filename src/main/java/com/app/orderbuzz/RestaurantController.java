@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.orderbuzz.domain.Product;
 import com.app.orderbuzz.domain.Restaurant;
+import com.app.orderbuzz.dto.RestaurantDto;
 import com.app.orderbuzz.service.MenuService;
 import com.app.orderbuzz.service.RestaurantService;
 
@@ -47,7 +48,7 @@ public class RestaurantController {
 	
 	@RequestMapping(value = "/getnearbyrestinfo", method = RequestMethod.GET, produces = "application/json")
 	@ResponseBody
-	public List<Restaurant> getUserList (
+	public List<RestaurantDto> getUserList (
 			@RequestParam("Radius") String Radius,
 			@RequestParam("Lat") String Lat,
 			@RequestParam("Long") String Long){
@@ -58,6 +59,7 @@ public class RestaurantController {
 	/**
 	 * This method will provide Restaurant menu based on Restaurant ID 
 	 * @param restId
+	 * http://orderbuzz-orderbuzz.rhcloud.com/orderbuzz/restaurant/getrestmenu/1
 	 * @return
 	*/
 	

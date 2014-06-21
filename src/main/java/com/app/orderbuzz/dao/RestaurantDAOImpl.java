@@ -5,12 +5,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.orderbuzz.domain.Restaurant;
+import com.app.orderbuzz.dto.RestaurantDto;
 
 
 
@@ -41,10 +43,10 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 	@Override
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public List<Restaurant> getRestaurantsList(String Lat, String Long, String Radius) {
+	public List<RestaurantDto> getRestaurantsList(String Lat, String Long, String Radius) {
 		Session session = getSessionFactory().openSession();
 		//String hql="select R.restName, R.restId, R.restPhoto, R.restQueueNo, R.restAdd from Restaurant R";
-		String sql= "select * from RESTAURANT As R Inner Join ( SELECT z.GEOFENCE_ID_PK, z.ADD_DESC, "
+		String sql= "select  R.rest_id_pk , R.rest_Name, R.rest_Photo, R.rest_QueueNo, add_desc, distance_in_km from RESTAURANT As R Inner Join ( SELECT z.GEOFENCE_ID_PK, z.ADD_DESC, "
 				+ "p.distance_unit * DEGREES(ACOS(COS(RADIANS(p.latpoint)) * COS(RADIANS(z.latitude)) * "
 				+ "COS(RADIANS(p.longpoint) - RADIANS(z.longitude)) + SIN(RADIANS(p.latpoint)) * "
 				+ "SIN(RADIANS(z.latitude)))) AS distance_in_km FROM  ADDRESS AS z JOIN ( "
@@ -56,7 +58,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 				+ "ORDER BY distance_in_km ) temp ON R.GEOFENCE_ID_FK = temp.GEOFENCE_ID_PK" ;
 	
 		Query query = session.createSQLQuery(sql);
-		List <Restaurant> restaurantList = query.list();
+		List <RestaurantDto> restaurantList = query.setResultTransformer(Transformers.aliasToBean(RestaurantDto.class)).list();
 		session.close();
 		return restaurantList;
 	}
