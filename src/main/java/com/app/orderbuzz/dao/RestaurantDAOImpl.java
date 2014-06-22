@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.orderbuzz.domain.Restaurant;
+import com.app.orderbuzz.dto.ResourcesDto;
 import com.app.orderbuzz.dto.RestaurantDto;
 
 
@@ -36,6 +37,23 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 	}
 
 
+	/**
+	 * 
+	 * Rest api to provide resources for Mobile Application 
+	 */
+	
+	public List<ResourcesDto> getAppResources ()
+	{
+		Session session = getSessionFactory().openSession();
+		String sql= "select rest_id_pk , rest_photo from RESTAURANT";
+		Query query = session.createSQLQuery(sql);
+		@SuppressWarnings("unchecked")
+		List <ResourcesDto> resourceList = query.setResultTransformer(Transformers.aliasToBean(ResourcesDto.class)).list();
+		session.close();
+		return resourceList;
+		
+	}
+	
 	/**
 	 * This method Will Return Basic Information about Resturant
 	 * For example, ID,NAME,ADDRESS,PHOTOURL,QUEUENO

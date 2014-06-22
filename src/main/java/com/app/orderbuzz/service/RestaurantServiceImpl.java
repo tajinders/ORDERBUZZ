@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.orderbuzz.dao.RestaurantDAO;
 import com.app.orderbuzz.domain.Restaurant;
+import com.app.orderbuzz.dto.ResourcesDto;
 import com.app.orderbuzz.dto.RestaurantDto;
 
 
@@ -29,6 +30,12 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public List<RestaurantDto> getRestaurantsList(String Lat, String Long, String Radius) {
 		return resturantDao.getRestaurantsList(Lat,Long,Radius);
+	}
+
+	@Override
+	public List<ResourcesDto> getAppResources() {
+		// TODO Auto-generated method stub
+		return resturantDao.getAppResources();
 	}
 
 }

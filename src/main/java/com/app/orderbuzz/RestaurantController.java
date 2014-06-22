@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.orderbuzz.domain.Product;
 import com.app.orderbuzz.domain.Restaurant;
+import com.app.orderbuzz.dto.ResourcesDto;
 import com.app.orderbuzz.dto.RestaurantDto;
 import com.app.orderbuzz.service.MenuService;
 import com.app.orderbuzz.service.RestaurantService;
@@ -69,4 +70,10 @@ public class RestaurantController {
 		return menuService.getRestaurantProducts(restId);
 	}
 	
+	@RequestMapping(value = "/getappresources", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public  List<ResourcesDto> getAppResources() {
+		return restaurantService.getAppResources();
+	}
+		
 }
