@@ -10,10 +10,14 @@
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<beans:property name="username" value="root" />
-		<beans:property name="password" value="" />
-		<beans:property name="url" value="jdbc:mysql://localhost:3306/orderbuzzdb" />
+		<beans:property name="username" value="adminUQSIaCU" />
+		<beans:property name="password" value="lbxxYXZeUe7a" />
+		<beans:property name="url" value="jdbc:mysql://127.2.65.2:3306/orderbuzz" />
 	</beans:bean>
+	
+<!-- jdbc:mysql://localhost:3306/orderbuzzdb -->
+
+
 
 	<!-- registering Hibernate session Factory -->
 	<beans:bean id="sessionFactory"
@@ -24,7 +28,7 @@
 			<beans:props>
 				<beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect
 				</beans:prop>
-				<beans:prop key="hibernate.hbm2ddl.auto">create</beans:prop>
+				<beans:prop key="hibernate.hbm2ddl.auto">create-update</beans:prop>
 				<beans:prop key="hibernate.use.query.cache">true</beans:prop>
 				<beans:prop key="hibernate.show_sql">true</beans:prop>
 			</beans:props>
