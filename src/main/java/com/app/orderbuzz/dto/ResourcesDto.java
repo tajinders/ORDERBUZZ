@@ -12,6 +12,7 @@ public class ResourcesDto {
 		this.rest_id_pk = rest_id_pk;
 		
 	}
+	
 	// url
 	public String getRest_photo() {
 		return rest_photo;
