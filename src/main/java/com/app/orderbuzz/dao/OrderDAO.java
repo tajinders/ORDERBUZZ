@@ -12,5 +12,4 @@ public interface OrderDAO {
 	public abstract List<Order>getOrdersForResturant(long restId, String status);
 	public abstract Boolean SubmitOrder(Order newOrder , String restId, String Stripetoken ,String totalPrice);
 	public abstract void processedOrder(String restId, String orderId); 
-
 }
