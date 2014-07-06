@@ -164,6 +164,11 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>1.15.1</version>
+		</dependency>
 
 		<!-- Test -->
 		<dependency>

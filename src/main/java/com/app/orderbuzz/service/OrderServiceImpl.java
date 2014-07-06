@@ -23,8 +23,8 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public void SubmitOrder(Order newOrder ,String restId) {
-		orderDAO.SubmitOrder(newOrder ,restId);
+	public Boolean SubmitOrder(Order newOrder , String restId ,String Stripetoken , String totalPrice) {
+		return orderDAO.SubmitOrder(newOrder , restId, Stripetoken , totalPrice);
 		
 	}
 
