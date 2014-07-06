@@ -5,13 +5,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.orderbuzz.domain.Order;
+import com.app.orderbuzz.dto.CartDto;
+import com.app.orderbuzz.dto.OrderDto;
 import com.app.orderbuzz.service.OrderService;
+import com.google.gson.Gson;
 
 
 @Controller
@@ -49,23 +53,21 @@ public class OrderController {
 	 *                      Mobile Phones when Food order is processed
 	 *               
 	 */
-	@RequestMapping(value = "/submitorder", method = RequestMethod.GET)
-	public void	SubmitOrder(
-			@RequestParam("restid") String restId,
-			@RequestParam("status") String orderStatus,
-			@RequestParam("summary") String orderSummary,
-			@RequestParam("name") String userName,
-			@RequestParam("key") String orderKey,
-			@RequestParam("gcmkey") String orderGcmKey){
+	@RequestMapping(value = "/submitorder", method = RequestMethod.POST)
+	@ResponseBody
+	public Boolean	SubmitOrder(@RequestBody OrderDto order){
 
 		Order newOrder = new Order();
-		newOrder.setOrderKey(orderKey);
-		newOrder.setOrderStatus(orderStatus);
-		newOrder.setOrderSummary(orderSummary);
-		newOrder.setOrderGcmKey(orderGcmKey);
-		newOrder.setUserName(userName);
-
-		orderService.SubmitOrder(newOrder , restId);
+		newOrder.setOrderKey(order.getSecretKey());
+		newOrder.setOrderStatus("pending");
+		newOrder.setOrderSummary(new Gson().toJson(order.getMycart()));
+		newOrder.setOrderGcmKey(order.getGcmKey());
+		String Stripetoken =  order.getTokenno();
+		String totalPrice = order.getTotalPrice();
+		String restId = order.getRestId();
+	
+		return orderService.SubmitOrder(newOrder , restId , Stripetoken , totalPrice);
+		
 	}
 	
 	/*

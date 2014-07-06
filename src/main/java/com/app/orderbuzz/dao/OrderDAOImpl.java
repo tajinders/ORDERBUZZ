@@ -23,6 +23,14 @@ import org.springframework.web.client.RestTemplate;
 
 import com.app.orderbuzz.domain.Order;
 import com.app.orderbuzz.domain.Restaurant;
+import com.app.orderbuzz.dto.OrderDto;
+import com.stripe.Stripe;
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.APIException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
+import com.stripe.model.Charge;
 
 
 
@@ -55,15 +63,55 @@ public class OrderDAOImpl implements OrderDAO {
 
 	}
 
+	private Boolean StripePayment(String stripeToken , String totalPrice )
+	{
+
+		Stripe.apiKey = "sk_test_4KzvykNVDMae6nVPgvgt4lLb";
+		Map<String, Object> chargeParams = new HashMap<String, Object>();
+		
+		
+		chargeParams.put("amount", (int)Float.parseFloat(totalPrice)*100); 
+		chargeParams.put("currency", "usd");
+		chargeParams.put("card", stripeToken);
+		chargeParams.put("description", "Charge for Orderbuzz online order");
+
+		try {
+			Boolean payment = Charge.create(chargeParams).getPaid();
+			if (!payment)
+				return false; 
+
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+			return false; 
+		} catch (InvalidRequestException e) {
+			e.printStackTrace();
+			return false; 
+		} catch (APIConnectionException e) {
+			e.printStackTrace();
+			return false; 
+		} catch (CardException e) {
+			e.printStackTrace();
+			return false; 
+		} catch (APIException e) {
+			e.printStackTrace();
+			return false; 
+		}
+		return true;
+	}
+
 	@Transactional
 	@Override	
-	public void SubmitOrder(Order newOrder ,String restId)
-	{
+	public Boolean SubmitOrder(Order newOrder , String restId , String Stripetoken , String totalPrice)
+	{ 
 		Session session = getSessionFactory().openSession();
 
-		// Inserting newOrder in to Order Table
+		Boolean Status = StripePayment(Stripetoken , totalPrice);
+		if (!Status)
+			return false ; 
 
-		String hql = "SELECT COALESCE(MAX(OD.ORDER_SEQ_NO,0) FROM RESTAURANT_ORDER AS RO, ORDER_DETAILS AS OD WHERE RO.ORDER_ID_FK = OD.ORDER_ID_PK AND RO.REST_ID_FK="+restId;
+		// Inserting newOrder in the  Order table
+
+		String hql = "SELECT COALESCE(MAX(OD.ORDER_SEQ_NO),0) FROM RESTAURANT_ORDER AS RO, ORDER_DETAILS AS OD WHERE RO.ORDER_ID_FK = OD.ORDER_ID_PK AND RO.REST_ID_FK="+restId;
 		long orderSequenceNo = 0;
 		Query query = session.createSQLQuery(hql);
 
@@ -72,6 +120,7 @@ public class OrderDAOImpl implements OrderDAO {
 		}
 		catch (Exception ex){
 			System.out.println("Null Value Exception - No Record Found - No Orders Avaliable for this resturant");
+
 		}
 
 		newOrder.setOrderSequenceNo(orderSequenceNo+1);
@@ -88,7 +137,7 @@ public class OrderDAOImpl implements OrderDAO {
 		query.executeUpdate();
 
 		session.close();
-
+		return true;
 	}
 
 	public void processedOrder(String restId, String orderSeqNo){
