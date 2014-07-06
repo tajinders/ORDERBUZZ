@@ -65,7 +65,6 @@ public class OrderDAOImpl implements OrderDAO {
 
 	private Boolean StripePayment(String stripeToken , String totalPrice )
 	{
-
 		Stripe.apiKey = "sk_test_4KzvykNVDMae6nVPgvgt4lLb";
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
 			
