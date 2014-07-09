@@ -75,5 +75,13 @@ public class RestaurantController {
 	public  List<ResourcesDto> getAppResources() {
 		return restaurantService.getAppResources();
 	}
+	
+	@RequestMapping(value = "/gettoprestinfo", method = RequestMethod.GET, produces = "application/json")
+	@ResponseBody
+	public List<RestaurantDto> getTopRestaurantsList(){
+		return restaurantService.getTopRestaurantsList();
+	}
+	
+	
 		
 }

@@ -29,6 +29,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 	 * @Autowired annotation is look for bean with type Session Factory in xml 
 	 * And initialize sessionFactory with it
 	 * */
+	
 	@Autowired 
 	private SessionFactory sessionFactory;
 
@@ -53,6 +54,18 @@ public class RestaurantDAOImpl implements RestaurantDAO {
 		return resourceList;
 		
 	}
+	
+
+	@SuppressWarnings("unchecked")
+	public List<RestaurantDto> getTopRestaurantsList() {
+		Session session = getSessionFactory().openSession();
+		String sql = "Select R.rest_id_pk ,  R.rest_Name, R.rest_Photo, R.rest_QueueNo,  A.add_desc from RESTAURANT R inner join ADDRESS A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK LIMIT 10";
+		Query query = session.createSQLQuery(sql);
+		List <RestaurantDto> restaurantList = query.setResultTransformer(Transformers.aliasToBean(RestaurantDto.class)).list();
+		session.close();
+		return restaurantList;
+	}
+	
 	
 	/**
 	 * This method Will Return Basic Information about Resturant

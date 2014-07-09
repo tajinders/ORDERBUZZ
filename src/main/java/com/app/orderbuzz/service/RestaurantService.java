@@ -10,4 +10,5 @@ public interface RestaurantService {
 	
 	public List<RestaurantDto> getRestaurantsList( String Lat, String Long, String Radius);
 	public List<ResourcesDto> getAppResources ();
+	public List<RestaurantDto> getTopRestaurantsList();
 }

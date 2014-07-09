@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import javax.persistence.Column;
 
 public class RestaurantDto {
-	private BigInteger  rest_id_pk;
+	private BigInteger rest_id_pk;
 	private String rest_Name;
 	private String rest_Photo;
 	private String rest_QueueNo;
@@ -28,6 +28,7 @@ public class RestaurantDto {
 	public BigInteger getRest_id_pk() {
 		return rest_id_pk;
 	}
+	
 	public void setRest_id_pk(BigInteger rest_id_pk) {
 		this.rest_id_pk = rest_id_pk;
 	}

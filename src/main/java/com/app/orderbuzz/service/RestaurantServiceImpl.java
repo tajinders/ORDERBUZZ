@@ -38,4 +38,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return resturantDao.getAppResources();
 	}
 
+	@Override
+	public List<RestaurantDto> getTopRestaurantsList() {
+		// TODO Auto-generated method stub
+		return resturantDao.getTopRestaurantsList();
+	}
+
 }
