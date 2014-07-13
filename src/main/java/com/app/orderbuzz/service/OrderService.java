@@ -9,6 +9,6 @@ import com.app.orderbuzz.domain.Order;
 
 public interface OrderService {
 	public List<Order>getOrdersForResturant(long restId, String status);
-	public Boolean SubmitOrder(Order newOrder , String restId , String Stripetoken , String totalPrice);
+	public Boolean SubmitOrder(Order newOrder );
 	public void processedOrder(String restId, String orderSeqNo);
 }

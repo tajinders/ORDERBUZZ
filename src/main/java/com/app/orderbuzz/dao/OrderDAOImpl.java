@@ -58,7 +58,7 @@ public class OrderDAOImpl implements OrderDAO {
 	{
 		Stripe.apiKey = "sk_test_4KzvykNVDMae6nVPgvgt4lLb";
 		Map<String, Object> chargeParams = new HashMap<String, Object>();
-			
+
 		chargeParams.put("amount", (int)Float.parseFloat(totalPrice)*100); 
 		chargeParams.put("currency", "usd");
 		chargeParams.put("card", stripeToken);
@@ -90,9 +90,15 @@ public class OrderDAOImpl implements OrderDAO {
 
 	@Transactional
 	@Override	
-	public Boolean SubmitOrder(Order newOrder , String restId , String Stripetoken , String totalPrice)
+	public Boolean SubmitOrder(Order newOrder)
 	{ 
+		String restId = newOrder.getRestId();
+		String Stripetoken = newOrder.getStripetokenno();
+		String totalPrice = newOrder.getTotalPrice();
+		newOrder.setOrderStatus("pending");
+		
 		Session session = getSessionFactory().openSession();
+		session.beginTransaction();
 
 		Boolean Status = StripePayment(Stripetoken , totalPrice);
 		if (!Status)
@@ -125,6 +131,7 @@ public class OrderDAOImpl implements OrderDAO {
 		query = session.createSQLQuery(hql);
 		query.executeUpdate();
 
+		session.getTransaction().commit();
 		session.close();
 		return true;
 	}

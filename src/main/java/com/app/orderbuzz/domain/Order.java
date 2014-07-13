@@ -1,11 +1,18 @@
 package com.app.orderbuzz.domain;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity 
 @Table(name="ORDER_DETAILS")
@@ -16,10 +23,23 @@ public class Order {
 	@GeneratedValue
 	private long orderId;
 	
-	//@Lob
-	@Column(name="ORDER_SUMMARY")
-	private String orderSummary;
-		
+	@Transient
+	private String stripetokenno ;
+
+	
+//	//@Lob
+//	@Column(name="ORDER_SUMMARY")
+//	private String orderSummary;
+
+	@JoinTable(
+			name = "ORDERDETAILS_ORDERITEM", 
+			joinColumns = @JoinColumn(name = "ORDER_ID_FK"), 
+			inverseJoinColumns = @JoinColumn(name = "ORDER_ITEM_ID_FK")
+			)
+	@OneToMany(cascade=javax.persistence.CascadeType.ALL,fetch=FetchType.EAGER)
+	private Set<OrderItem> orderItem ;
+
+	
 	@Column(name="ORDER_KEY")
 	private String orderKey;
 	
@@ -32,6 +52,11 @@ public class Order {
 	@Column(name="USERNAME")
 	private String userName;
 	
+	@Transient
+	String restId ;
+
+	@Transient
+	String totalPrice;
 
 	public long getOrderSequenceNo() {
 		return orderSequenceNo;
@@ -52,16 +77,41 @@ public class Order {
 		this.orderId = orderId;
 	}
 
-	public String getOrderSummary() {
-		return orderSummary;
-	}
-
-	public void setOrderSummary(String orderSummary) {
-		this.orderSummary = orderSummary;
-	}
 
 	public String getOrderKey() {
 		return orderKey;
+	}
+
+	public String getStripetokenno() {
+		return stripetokenno;
+	}
+
+	public void setStripetokenno(String stripetokenno) {
+		this.stripetokenno = stripetokenno;
+	}
+
+	public Set<OrderItem> getOrderItem() {
+		return orderItem;
+	}
+
+	public void setOrderItem(Set<OrderItem> orderItem) {
+		this.orderItem = orderItem;
+	}
+
+	public String getRestId() {
+		return restId;
+	}
+
+	public void setRestId(String restId) {
+		this.restId = restId;
+	}
+
+	public String getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(String totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	public void setOrderKey(String orderKey) {

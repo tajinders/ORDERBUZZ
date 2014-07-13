@@ -55,18 +55,9 @@ public class OrderController {
 	 */
 	@RequestMapping(value = "/submitorder", method = RequestMethod.POST)
 	@ResponseBody
-	public Boolean	SubmitOrder(@RequestBody OrderDto order){
-
-		Order newOrder = new Order();
-		newOrder.setOrderKey(order.getSecretKey());
-		newOrder.setOrderStatus("pending");
-		newOrder.setOrderSummary(new Gson().toJson(order.getMycart()));
-		newOrder.setOrderGcmKey(order.getGcmKey());
-		String Stripetoken =  order.getTokenno();
-		String totalPrice = order.getTotalPrice();
-		String restId = order.getRestId();
+	public Boolean	SubmitOrder(@RequestBody Order order){
 	
-		return orderService.SubmitOrder(newOrder , restId , Stripetoken , totalPrice);
+		return orderService.SubmitOrder(order);
 		
 	}
 	

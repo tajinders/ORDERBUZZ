@@ -6,27 +6,29 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+
 	<!-- registering Datasource bean -->
-	<!--
-	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+
+		<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<beans:property name="username" value="adminUQSIaCU" />
 		<beans:property name="password" value="lbxxYXZeUe7a" />
-		<beans:property name="url" value="jdbc:mysql://127.2.65.2:3306/orderbuzz" />
+		<beans:property name="url"
+			value="jdbc:mysql://127.2.65.2:3306/orderbuzz" />
 	</beans:bean>
-	-->
-
-	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
-		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<beans:property name="username" value="root" />
-		<beans:property name="password" value="" />
-		<beans:property name="url" value="jdbc:mysql://localhost:3306/orderbuzzdb" />
-	</beans:bean>
-
-
+	
+	
+<!-- 
+	 <beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close"> <beans:property name="driverClassName" value="com.mysql.jdbc.Driver" 
+		/> <beans:property name="username" value="root" /> <beans:property name="password" 
+		value="" /> <beans:property name="url" value="jdbc:mysql://localhost:3306/orderbuzzdb" 
+		/> </beans:bean>
+-->
 	<!-- registering Hibernate session Factory -->
+
+
 	<beans:bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSource"></beans:property>
