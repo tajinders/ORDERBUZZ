@@ -71,7 +71,7 @@ public class Restaurant {
 			joinColumns = @JoinColumn(name = "REST_ID_FK"), 
 			inverseJoinColumns = @JoinColumn(name = "ORDER_ID_FK")
 			)
-	@OneToMany(cascade=javax.persistence.CascadeType.ALL)
+	@OneToMany(cascade=javax.persistence.CascadeType.ALL,fetch=FetchType.EAGER)
 	private List<Order> orderList;	
 	
 

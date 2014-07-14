@@ -1,7 +1,9 @@
 package com.app.orderbuzz.dao;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
 import com.app.orderbuzz.domain.Order;
+import com.app.orderbuzz.domain.Product;
 import com.stripe.Stripe;
 import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.APIException;
@@ -46,9 +50,26 @@ public class OrderDAOImpl implements OrderDAO {
 	public List<Order> getOrdersForResturant(long restId, String status) {
 
 		Session session = getSessionFactory().openSession();
-		String sql = "Select *  from ORDER_DETAILS OD inner join RESTAURANT_ORDER RO ON OD.ORDER_ID_PK = RO.ORDER_ID_FK where OD.ORDER_STATUS='"+status+"'";
-		Query query = session.createSQLQuery(sql);
+		String hql = "Select R.orderList from Restaurant R where R.restId="+restId;
+		Query query = session.createQuery(hql);
 		List <Order> orderList = query.list();
+		Iterator<Order> i = orderList.iterator();
+		
+		String Filter = null;
+		if (status.equalsIgnoreCase("done")){
+		Filter = "pending";	
+		}
+		else if (status.equalsIgnoreCase("pending")){
+			Filter ="done";
+		}
+		
+		while (i.hasNext()) {
+		   Order order = i.next();
+		  if (order.getOrderStatus().equalsIgnoreCase(Filter)){
+			  i.remove(); 
+		  }  
+		}
+
 		session.close();
 		return orderList;
 
