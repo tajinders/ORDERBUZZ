@@ -54,20 +54,20 @@ public class OrderDAOImpl implements OrderDAO {
 		Query query = session.createQuery(hql);
 		List <Order> orderList = query.list();
 		Iterator<Order> i = orderList.iterator();
-		
+
 		String Filter = null;
 		if (status.equalsIgnoreCase("done")){
-		Filter = "pending";	
+			Filter = "pending";	
 		}
 		else if (status.equalsIgnoreCase("pending")){
 			Filter ="done";
 		}
-		
+
 		while (i.hasNext()) {
-		   Order order = i.next();
-		  if (order.getOrderStatus().equalsIgnoreCase(Filter)){
-			  i.remove(); 
-		  }  
+			Order order = i.next();
+			if (order.getOrderStatus().equalsIgnoreCase(Filter)){
+				i.remove(); 
+			}  
 		}
 
 		session.close();
@@ -117,7 +117,7 @@ public class OrderDAOImpl implements OrderDAO {
 		String Stripetoken = newOrder.getStripetokenno();
 		String totalPrice = newOrder.getTotalPrice();
 		newOrder.setOrderStatus("pending");
-		
+
 		Session session = getSessionFactory().openSession();
 		session.beginTransaction();
 
@@ -161,63 +161,51 @@ public class OrderDAOImpl implements OrderDAO {
 	@Transactional
 	public void processedOrder(String restId, String orderSeqNo){
 
-		Session session = getSessionFactory().openSession();
-		String mobilezRegkey;
-		String restName;
+			Session session = getSessionFactory().openSession();
+			String mobilezRegkey;
+			String restName;
 
-		//Update Status 
-		String sql =  "UPDATE ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK  set od.ORDER_STATUS='Done' Where od.ORDER_STATUS='pending' And od.ORDER_SEQ_NO=" + orderSeqNo;
-		Query query = session.createSQLQuery(sql);
-		query.executeUpdate();
+			//Update Status 
+			String sql =  "UPDATE ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK  set od.ORDER_STATUS='Done' Where od.ORDER_STATUS='pending' And od.ORDER_SEQ_NO=" + orderSeqNo;
+			Query query = session.createSQLQuery(sql);
+			query.executeUpdate();
+			
 
-		// Get Mobile_KEY
-		sql = "Select ORDER_GCMKEY from ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK Where od.ORDER_STATUS='Done' And od.ORDER_SEQ_NO=" + orderSeqNo;
-		query = session.createSQLQuery(sql);
-		mobilezRegkey = (String) query.list().get(0);
-		System.out.println(mobilezRegkey);
+			// Get Mobile_KEY
+			sql = "Select ORDER_GCMKEY from ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK Where od.ORDER_STATUS='Done' And od.ORDER_SEQ_NO=" + orderSeqNo;
+			query = session.createSQLQuery(sql);
+			mobilezRegkey = (String) query.list().get(0);
+			System.out.println(mobilezRegkey);
 
 
-		// Get restaurant Name 
-		sql = "Select R.REST_NAME  from RESTAURANT R inner join ADDRESS A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK where R.REST_ID_PK="+restId;
-		query = session.createSQLQuery(sql);
-		restName = (String) query.list().get(0);
-		System.out.println(restName);
-		mobilezRegkey = "APA91bFKplHJrRLIuuRBh2xgHMtu7toVdqyc5lEvET41twi4HRQe0XZQ8_9__noZxCgQEHDB9kXhTyG5imv7C0G1DYfZrXZ6cYuObjbo5s91EzkYUpD8w1oO1E1cDflEGxeldQfilhM3ll5WCiMx-xBAv6z4DqTHWw";
-		// GCM push
-		RestTemplate restTemplate = new RestTemplate();
-		String url = "https://android.googleapis.com/gcm/send?=&=";
+			// Get restaurant Name 
+			sql = "Select R.REST_NAME  from RESTAURANT R inner join ADDRESS A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK where R.REST_ID_PK="+restId;
+			query = session.createSQLQuery(sql);
+			restName = (String) query.list().get(0);
+			System.out.println(restName);
+			mobilezRegkey = "APA91bFKplHJrRLIuuRBh2xgHMtu7toVdqyc5lEvET41twi4HRQe0XZQ8_9__noZxCgQEHDB9kXhTyG5imv7C0G1DYfZrXZ6cYuObjbo5s91EzkYUpD8w1oO1E1cDflEGxeldQfilhM3ll5WCiMx-xBAv6z4DqTHWw";
+			// GCM push
+			RestTemplate restTemplate = new RestTemplate();
+			String url = "https://android.googleapis.com/gcm/send?=&=";
 
-		HttpHeaders requestHeaders = new HttpHeaders();
-		requestHeaders.set("Authorization", "key=AIzaSyDM5TT-MtJeiOD3j5wax5nXxldJUKrK0vE");
-		requestHeaders.set("Content-type", "application/x-www-form-urlencoded");
-		MultiValueMap<String, String> postParams = new LinkedMultiValueMap<String, String>();
-		postParams.add("registration_id",mobilezRegkey);
-		postParams.add("data", "restName");
-		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(postParams, requestHeaders);
-		restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+			HttpHeaders requestHeaders = new HttpHeaders();
+			requestHeaders.set("Authorization", "key=AIzaSyDM5TT-MtJeiOD3j5wax5nXxldJUKrK0vE");
+			requestHeaders.set("Content-type", "application/x-www-form-urlencoded");
+			MultiValueMap<String, String> postParams = new LinkedMultiValueMap<String, String>();
+			postParams.add("registration_id",mobilezRegkey);
+			postParams.add("data", "restName");
+			HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(postParams, requestHeaders);
+			restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
-		//GCM PUSH
+			// Update restaurant waiting queue no
+			sql = "UPDATE RESTAURANT SET REST_QUEUENO=REST_QUEUENO-1 WHERE REST_ID_PK="+restId;
+			query = session.createSQLQuery(sql);
+			query.executeUpdate();
 
-		/*
-		sendPost("https://android.googleapis.com/gcm/send?=&=",mobileregkey, data);
-		PostMethod method = new PostMethod(url);
-		method.setRequestHeader("Authorization", "key=AIzaSyDTOBzSdYnJWpY6-ceWPOb91L6ho2LkDpw");
-		method.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		NameValuePair[] body = { 
-				new NameValuePair("registration_id", mobileregkey),
-				new NameValuePair("data", data),
-
-		};
-		 */
-
-		// Update restaurant waiting queue no
-		sql = "UPDATE RESTAURANT SET REST_QUEUENO=REST_QUEUENO-1 WHERE REST_ID_PK="+restId;
-		query = session.createSQLQuery(sql);
-		query.executeUpdate();
-
-		// close session
-		session.close();
-
+			// close session
+			session.close();
+			
+		
 	}
 
 

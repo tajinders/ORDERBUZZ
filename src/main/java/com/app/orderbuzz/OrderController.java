@@ -68,11 +68,13 @@ public class OrderController {
 	 * Service - http://localhost:8081/orderking/order/processedorder?restid=4&orderseqno=1
 	 * 
 	 */
-	@RequestMapping(value = "/processedorder", method = RequestMethod.GET)
-	public void	SubmitOrder(
+	@RequestMapping(value = "/processedorder", method = RequestMethod.GET , produces = "application/json")
+	@ResponseBody
+	public Boolean	SubmitOrder(
 			@RequestParam("restid") String restId,
 			@RequestParam("orderseqno") String orderseqno){
 		orderService.processedOrder(restId, orderseqno);
+		return true;
 	}
 	
 }
