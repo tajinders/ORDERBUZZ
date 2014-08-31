@@ -157,6 +157,8 @@ public class OrderDAOImpl implements OrderDAO {
 		return true;
 	}
 
+	//http://localhost:8080/orderking/order/processedorder?restid=1&orderseqno=1
+	@Transactional
 	public void processedOrder(String restId, String orderSeqNo){
 
 		Session session = getSessionFactory().openSession();
@@ -180,28 +182,19 @@ public class OrderDAOImpl implements OrderDAO {
 		query = session.createSQLQuery(sql);
 		restName = (String) query.list().get(0);
 		System.out.println(restName);
-
-
+		mobilezRegkey = "APA91bFKplHJrRLIuuRBh2xgHMtu7toVdqyc5lEvET41twi4HRQe0XZQ8_9__noZxCgQEHDB9kXhTyG5imv7C0G1DYfZrXZ6cYuObjbo5s91EzkYUpD8w1oO1E1cDflEGxeldQfilhM3ll5WCiMx-xBAv6z4DqTHWw";
 		// GCM push
 		RestTemplate restTemplate = new RestTemplate();
 		String url = "https://android.googleapis.com/gcm/send?=&=";
 
 		HttpHeaders requestHeaders = new HttpHeaders();
-		requestHeaders.set("Authorization", "key=AIzaSyDTOBzSdYnJWpY6-ceWPOb91L6ho2LkDpw");
+		requestHeaders.set("Authorization", "key=AIzaSyDM5TT-MtJeiOD3j5wax5nXxldJUKrK0vE");
 		requestHeaders.set("Content-type", "application/x-www-form-urlencoded");
-
-
 		MultiValueMap<String, String> postParams = new LinkedMultiValueMap<String, String>();
 		postParams.add("registration_id",mobilezRegkey);
-		postParams.add("data", restName);
-
+		postParams.add("data", "restName");
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(postParams, requestHeaders);
-
 		restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-
-
-
-
 
 		//GCM PUSH
 
@@ -216,7 +209,6 @@ public class OrderDAOImpl implements OrderDAO {
 
 		};
 		 */
-
 
 		// Update restaurant waiting queue no
 		sql = "UPDATE RESTAURANT SET REST_QUEUENO=REST_QUEUENO-1 WHERE REST_ID_PK="+restId;

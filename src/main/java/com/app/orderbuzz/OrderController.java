@@ -62,6 +62,7 @@ public class OrderController {
 	}
 	
 	/*
+	 * 
 	 * This is method mainly used by vendor app and this method process order, 
 	 * send pushnotification to user and updates queue number
 	 * Service - http://localhost:8081/orderking/order/processedorder?restid=4&orderseqno=1
