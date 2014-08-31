@@ -178,7 +178,7 @@ public class OrderDAOImpl implements OrderDAO {
 
 
 		// Get restaurant Name 
-		sql = "Select R.REST_NAME  from RESTAURANT R inner join address A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK where R.REST_ID_PK="+restId;
+		sql = "Select R.REST_NAME  from RESTAURANT R inner join ADDRESS A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK where R.REST_ID_PK="+restId;
 		query = session.createSQLQuery(sql);
 		restName = (String) query.list().get(0);
 		System.out.println(restName);
