@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.orderbuzz.dao.OrderDAO;
 import com.app.orderbuzz.domain.Order;
+import com.app.orderbuzz.domain.User;
 
 
 
@@ -32,6 +33,12 @@ public class OrderServiceImpl implements OrderService{
 	public void processedOrder(String restId, String orderSeqNo) {
 		orderDAO.processedOrder(restId, orderSeqNo);
 		
+	}
+
+	@Override
+	public String VendorAuthentication(User user) {
+		// TODO Auto-generated method stub
+		return orderDAO.VendorAuthentication(user);
 	}
 	
 	

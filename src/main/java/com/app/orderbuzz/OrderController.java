@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.orderbuzz.domain.Order;
+import com.app.orderbuzz.domain.User;
 import com.app.orderbuzz.dto.CartDto;
 import com.app.orderbuzz.dto.OrderDto;
 import com.app.orderbuzz.service.OrderService;
@@ -75,6 +76,15 @@ public class OrderController {
 			@RequestParam("orderseqno") String orderseqno){
 		orderService.processedOrder(restId, orderseqno);
 		return true;
+	}
+
+	
+	@RequestMapping(value = "/vendorlogin", method = RequestMethod.POST)
+	@ResponseBody
+	public String VendorAuthentication(@RequestBody User user){
+		System.out.println("order controller form user id and password " + user.getPassword() +" - - "+ user.getUserid());
+		return orderService.VendorAuthentication(user);
+		
 	}
 	
 }

@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.app.orderbuzz.domain.Order;
 import com.app.orderbuzz.domain.Product;
+import com.app.orderbuzz.domain.User;
 import com.stripe.Stripe;
 import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.APIException;
@@ -161,51 +162,67 @@ public class OrderDAOImpl implements OrderDAO {
 	@Transactional
 	public void processedOrder(String restId, String orderSeqNo){
 
-			Session session = getSessionFactory().openSession();
-			String mobilezRegkey;
-			String restName;
+		Session session = getSessionFactory().openSession();
+		String mobilezRegkey;
+		String restName;
 
-			//Update Status 
-			String sql =  "UPDATE ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK  set od.ORDER_STATUS='Done' Where od.ORDER_STATUS='pending' And od.ORDER_SEQ_NO=" + orderSeqNo;
-			Query query = session.createSQLQuery(sql);
-			query.executeUpdate();
-			
-
-			// Get Mobile_KEY
-			sql = "Select ORDER_GCMKEY from ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK Where od.ORDER_STATUS='Done' And od.ORDER_SEQ_NO=" + orderSeqNo;
-			query = session.createSQLQuery(sql);
-			mobilezRegkey = (String) query.list().get(0);
-			System.out.println(mobilezRegkey);
+		//Update Status 
+		String sql =  "UPDATE ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK  set od.ORDER_STATUS='Done' Where od.ORDER_STATUS='pending' And od.ORDER_SEQ_NO=" + orderSeqNo;
+		Query query = session.createSQLQuery(sql);
+		query.executeUpdate();
 
 
-			// Get restaurant Name 
-			sql = "Select R.REST_NAME  from RESTAURANT R inner join ADDRESS A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK where R.REST_ID_PK="+restId;
-			query = session.createSQLQuery(sql);
-			restName = (String) query.list().get(0);
-			System.out.println(restName);
-			mobilezRegkey = "APA91bFKplHJrRLIuuRBh2xgHMtu7toVdqyc5lEvET41twi4HRQe0XZQ8_9__noZxCgQEHDB9kXhTyG5imv7C0G1DYfZrXZ6cYuObjbo5s91EzkYUpD8w1oO1E1cDflEGxeldQfilhM3ll5WCiMx-xBAv6z4DqTHWw";
-			// GCM push
-			RestTemplate restTemplate = new RestTemplate();
-			String url = "https://android.googleapis.com/gcm/send?=&=";
+		// Get Mobile_KEY
+		sql = "Select ORDER_GCMKEY from ORDER_DETAILS od inner join RESTAURANT_ORDER ro ON od.ORDER_ID_PK = ro.ORDER_ID_FK Where od.ORDER_STATUS='Done' And od.ORDER_SEQ_NO=" + orderSeqNo;
+		query = session.createSQLQuery(sql);
+		mobilezRegkey = (String) query.list().get(0);
+		System.out.println(mobilezRegkey);
 
-			HttpHeaders requestHeaders = new HttpHeaders();
-			requestHeaders.set("Authorization", "key=AIzaSyDM5TT-MtJeiOD3j5wax5nXxldJUKrK0vE");
-			requestHeaders.set("Content-type", "application/x-www-form-urlencoded");
-			MultiValueMap<String, String> postParams = new LinkedMultiValueMap<String, String>();
-			postParams.add("registration_id",mobilezRegkey);
-			postParams.add("data", "restName");
-			HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(postParams, requestHeaders);
-			restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
-			// Update restaurant waiting queue no
-			sql = "UPDATE RESTAURANT SET REST_QUEUENO=REST_QUEUENO-1 WHERE REST_ID_PK="+restId;
-			query = session.createSQLQuery(sql);
-			query.executeUpdate();
+		// Get restaurant Name 
+		sql = "Select R.REST_NAME  from RESTAURANT R inner join ADDRESS A ON R.GEOFENCE_ID_FK = A.GEOFENCE_ID_PK where R.REST_ID_PK="+restId;
+		query = session.createSQLQuery(sql);
+		restName = (String) query.list().get(0);
+		System.out.println(restName);
+		mobilezRegkey = "APA91bFKplHJrRLIuuRBh2xgHMtu7toVdqyc5lEvET41twi4HRQe0XZQ8_9__noZxCgQEHDB9kXhTyG5imv7C0G1DYfZrXZ6cYuObjbo5s91EzkYUpD8w1oO1E1cDflEGxeldQfilhM3ll5WCiMx-xBAv6z4DqTHWw";
+		// GCM push
+		RestTemplate restTemplate = new RestTemplate();
+		String url = "https://android.googleapis.com/gcm/send?=&=";
 
-			// close session
-			session.close();
-			
-		
+		HttpHeaders requestHeaders = new HttpHeaders();
+		requestHeaders.set("Authorization", "key=AIzaSyDM5TT-MtJeiOD3j5wax5nXxldJUKrK0vE");
+		requestHeaders.set("Content-type", "application/x-www-form-urlencoded");
+		MultiValueMap<String, String> postParams = new LinkedMultiValueMap<String, String>();
+		postParams.add("registration_id",mobilezRegkey);
+		postParams.add("data", "restName");
+		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(postParams, requestHeaders);
+		restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+
+		// Update restaurant waiting queue no
+		sql = "UPDATE RESTAURANT SET REST_QUEUENO=REST_QUEUENO-1 WHERE REST_ID_PK="+restId;
+		query = session.createSQLQuery(sql);
+		query.executeUpdate();
+
+		// close session
+		session.close();
+
+
+	}
+
+	@Override
+	public String VendorAuthentication(User user) {
+		// TODO Auto-generated method stub
+
+		Session session = getSessionFactory().openSession();
+		String sql = "Select U.REST_ID  from USER U where U.USER_ID='"+user.getUserid()+"' and U.PASSWORD='"+user.getPassword()+"'";
+		Query query = session.createSQLQuery(sql);
+		String restId;
+		if(query.list().isEmpty()) {
+			restId = null;
+		}else {
+			restId = (String) query.list().get(0);
+		}
+		return restId;
 	}
 
 
