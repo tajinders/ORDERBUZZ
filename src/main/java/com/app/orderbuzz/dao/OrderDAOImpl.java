@@ -194,7 +194,9 @@ public class OrderDAOImpl implements OrderDAO {
 		requestHeaders.set("Content-type", "application/x-www-form-urlencoded");
 		MultiValueMap<String, String> postParams = new LinkedMultiValueMap<String, String>();
 		postParams.add("registration_id",mobilezRegkey);
-		postParams.add("data", "restName");
+		
+		String data = "Your Order at "+restName.toUpperCase()+" is ready. Kindly Visit the Store";
+		postParams.add("data", data);
 		HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<MultiValueMap<String, String>>(postParams, requestHeaders);
 		restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
